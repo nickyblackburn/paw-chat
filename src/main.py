@@ -51,5 +51,10 @@ INTENTS = [
         "keywords": ["bye", "goodbye", "later", "gtg"],
         "responses": [
             "Byeee—proud of you. 🫶",
-            "See you
+            "See you],
+            },
+
+# Precompile regexes
+for intent in INTENTS:
+    intent["compiled"] = [re.compile(pat, re.I) for pat in intent["patterns"]]
 
