@@ -51,9 +51,11 @@ INTENTS = [
         "keywords": ["bye", "goodbye", "later", "gtg"],
         "responses": [
             "Byeee—proud of you. 🫶",
-            "See you],
-            },
-            {
+            "See you later, my brave pup!",
+            "Hugggs, come back anytime!"
+        ],
+    },
+    {
         "tag": "thanks",
         "patterns": [r"\b(thanks|thank you|ty|appreciate it)\b"],
         "keywords": ["thanks", "thank", "appreciate"],
@@ -129,3 +131,74 @@ def match_intent(user_text: str):
                 return intent, None
 
     return None, None
+
+# respoce generated 
+def respond(intent, match, user_text):
+    tag = intent["tag"]
+
+    if tag == "time":
+        now = datetime.now().strftime("%I:%M %p").lstrip("0")
+        return f"It’s {now} right now ⏰"
+    if tag == "date":
+        today = datetime.now().strftime("%A, %B %d, %Y")
+        return f"Today is {today} 📅"
+    if tag == "name_save":
+        # capture name from the pattern if we had a regex match
+        name = None
+        if match and match.groups():
+            name = match.groups()[-1]
+            memory["user_name"] = name
+            return f"Got it, {name}! I’ll remember your name. 🐾"
+        return "Tell me your name like: 'my name is Koda'!"
+    if tag == "help":
+        return random.choice(intent["responses"])
+    if tag in ("greet", "thanks", "bye"):
+        # personalize if we know their name
+        base = random.choice(intent["responses"])
+        if memory["user_name"]:
+            return base.replace("!", f", {memory['user_name']}!")
+        return base
+
+    # fallback if something weird happens
+    if intent["responses"]:
+        return random.choice(intent["responses"])
+    return "I feel a little confused, pup—can you say it another way? 🫣"
+
+def banner():
+    console.print(
+        Panel.fit(
+            "[bold magenta]Paw Chatbot[/bold magenta]\n"
+            "[dim]Type 'help' to see options. Type 'quit' to exit.[/dim]",
+            border_style="magenta",
+        )
+    )
+
+def main():
+    banner()
+    while True:
+        try:
+            user = console.input("[bold cyan]You[/bold cyan]: ").strip()
+        except (KeyboardInterrupt, EOFError):
+            console.print("\n[dim]Bye![/dim]")
+            sys.exit(0)
+
+        if not user:
+            continue
+        if user.lower() in {"quit", "exit"}:
+            console.print("[dim]Shutting down. Hugs.[/dim]")
+            break
+
+        intent, match = match_intent(user)
+        if intent:
+            reply = respond(intent, match, user)
+        else:
+            reply = (
+                "I’m not sure yet, but I’m learning! Try 'help', "
+                "'what time is it', or 'my name is Luna'."
+            )
+
+        console.print(f"[bold green]Bot[/bold green]: {reply}")
+
+if __name__ == "__main__":
+    main()
+
