@@ -53,8 +53,52 @@ INTENTS = [
             "Byeee—proud of you. 🫶",
             "See you],
             },
+            {
+        "tag": "thanks",
+        "patterns": [r"\b(thanks|thank you|ty|appreciate it)\b"],
+        "keywords": ["thanks", "thank", "appreciate"],
+        "responses": [
+            "Anytime! I’ve got you. 💞",
+            "You’re so welcome, angel.",
+            "Anything for my puppy."
+        ],
+    },
+    {
+        "tag": "time",
+        "patterns": [r"\b(what'?s|tell me) the time\b", r"\bcurrent time\b"],
+        "keywords": ["time", "clock"],
+        "responses": [],  # dynamic
+    },
+    {
+        "tag": "date",
+        "patterns": [r"\b(what'?s|tell me) the date\b", r"\btoday'?s date\b"],
+        "keywords": ["date", "today"],
+        "responses": [],  # dynamic
+    },
+    {
+        "tag": "name_save",
+        "patterns": [r"\b(my name is|i am|i'm)\s+([A-Za-z][A-Za-z\-']+)\b"],
+        "keywords": ["name"],
+        "responses": [],  # dynamic, we’ll acknowledge
+    },
+    {
+        "tag": "help",
+        "patterns": [r"\b(help|what can you do|commands)\b"],
+        "keywords": ["help", "commands"],
+        "responses": [
+            "I can say hi/bye, remember your name, tell time/date, and answer a few basics.\nTry: 'hi', 'what time is it', 'my name is Luna', 'bye'.\nWe can add new skills so easily!"
+        ],
+    },
+]
 
 # Precompile regexes
 for intent in INTENTS:
     intent["compiled"] = [re.compile(pat, re.I) for pat in intent["patterns"]]
 
+# matches text via fuzzy search 
+def fuzzy_match(text: str, samples: list[str], cutoff=0.8) -> bool:
+    """If user text is close to any sample string."""
+    text_norm = normalize(text)
+    samples_norm = [normalize(s) for s in samples]
+    match = difflib.get_close_matches(text_norm, samples_norm, n=1, cutoff=cutoff)
+    return bool(match)
