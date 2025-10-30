@@ -73,19 +73,19 @@ INTENTS = [
     {
         "tag": "date",
         "patterns": [r"\b(what'?s|tell me) the date\b", r"\btoday'?s date\b"],
-        "keywords": ["date", "today"],
+        "keywords": ["date", "today","day"],
         "responses": [],  # dynamic
     },
     {
         "tag": "name_save",
         "patterns": [r"\b(my name is|i am|i'm)\s+([A-Za-z][A-Za-z\-']+)\b"],
-        "keywords": ["name"],
+        "keywords": ["name","nick"],
         "responses": [],  # dynamic, we’ll acknowledge
     },
     {
         "tag": "help",
         "patterns": [r"\b(help|what can you do|commands)\b"],
-        "keywords": ["help", "commands"],
+        "keywords": ["help", "commands","cmds"],
         "responses": [
             "I can say hi/bye, remember your name, tell time/date, and answer a few basics.\nTry: 'hi', 'what time is it', 'my name is Luna', 'bye'.\nWe can add new skills so easily!"
         ],
