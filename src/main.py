@@ -102,3 +102,30 @@ def fuzzy_match(text: str, samples: list[str], cutoff=0.8) -> bool:
     samples_norm = [normalize(s) for s in samples]
     match = difflib.get_close_matches(text_norm, samples_norm, n=1, cutoff=cutoff)
     return bool(match)
+
+# matches users input 
+def match_intent(user_text: str):
+   
+    for intent in INTENTS:
+        for rx in intent["compiled"]:
+            m = rx.search(user_text)
+            if m:
+                return intent, m
+
+    # 2) quick keyword check
+    text_simple = user_text.lower()
+    for intent in INTENTS:
+        if any(k in text_simple for k in intent["keywords"]):
+            return intent, None
+
+    # 3) fuzzy vs example phrases
+    examples = []
+    for intent in INTENTS:
+        examples.extend(intent["keywords"])
+    if fuzzy_match(user_text, examples, cutoff=0.85):
+        # find which intent had that example
+        for intent in INTENTS:
+            if fuzzy_match(user_text, intent["keywords"], cutoff=0.85):
+                return intent, None
+
+    return None, None
