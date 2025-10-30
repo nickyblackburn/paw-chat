@@ -2,7 +2,7 @@
 ## base file for basic chatbot 
 
 import re, random, sys
-from datetime import date
+from datetime import datetime
 import difflib
 import spacy
 from rich.console import Console
@@ -11,8 +11,7 @@ from rich.panel import Panel
 console = Console()
 
 #npl pipeline 
-npl = spacey.load("en_core_web_sm",exclude=["ner","parser","textcat"])
-
+nlp = spacy.load("en_core_web_sm", exclude=["ner", "parser", "textcat"])
 
 # normalizes text
 def normalize(text: str) -> str:
